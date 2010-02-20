@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="." default="deploy">
+
+	<property name="TempFileDir" value="C:\app-deploy" />
+	<property name="ContextName" value="ODWebApp" />
+	<property name="temp.dir" value="C:\temp\pb09-build" />
+	<target name="deploy">
+		<mkdir dir="${temp.dir}/classes" />
+		<copy todir="${TempFileDir}\${ContextName}">
+			<fileset dir="${basedir}/WebContent">
+				<include name="**/*" />
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+		<javac encoding="UTF-8" srcdir="${basedir}/src" destdir="${temp.dir}/classes" classpath="${classpath}" debug="on" deprecation="off" optimize="on" target="1.4" source="1.4">
+			<classpath>
+				<fileset dir="${basedir}/WebContent/WEB-INF/lib">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="C:\tomcat-inst\lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+			<include name="**/*" />
+		</javac>
+		<jar basedir="${temp.dir}/classes" destfile="${TempFileDir}\${ContextName}\WEB-INF\lib\pb09-web.jar">
+			<exclude name="**/*.java" />
+		</jar>
+		<war destfile="C:\app-deploy\ODWebApp.war" webxml="${TempFileDir}/${ContextName}/WEB-INF/web.xml">
+			<fileset dir="${TempFileDir}\${ContextName}" />
+		</war>
+	</target>
+
+</project>
+
+
+
+

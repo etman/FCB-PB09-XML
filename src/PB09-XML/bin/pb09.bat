@@ -1,0 +1,2 @@
+@ECHO OFF
+java -cp "../lib/commons-cli-1.2.jar;../lib/pb09.jar;../lib/commons-digester-2.0.jar;../lib/commons-lang-2.4.jar;../lib/sflib.jar;../lib/commons-beanutils-1.8.2.jar;../lib/commons-logging-1.1.1.jar" com.steam.pb09.PB09Converter %*

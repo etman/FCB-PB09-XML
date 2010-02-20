@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="." default="deploy">
+	<property name="temp.dir" value="C:\app-deploy" />
+	<property name="ContextName" value="pb09" />
+
+	<target name="deploy">
+		<mkdir dir="${temp.dir}/classes" />
+		<copy todir="${temp.dir}/${ContextName}/bin" overwrite="true">
+			<fileset dir="${basedir}/bin">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		<copy todir="${temp.dir}/${ContextName}/lib">
+			<fileset dir="${basedir}/lib">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		<copy todir="${temp.dir}/classes">
+			<fileset dir="${basedir}/src">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		<javac encoding="UTF-8" srcdir="${temp.dir}/classes" destdir="${temp.dir}/classes" classpath="${classpath}" debug="on" deprecation="off" optimize="on">
+			<classpath>
+				<fileset dir="${basedir}/lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+			<include name="**/*" />
+		</javac>
+		<jar basedir="${temp.dir}/classes" destfile="${temp.dir}/${ContextName}/lib/pb09.jar">
+			<exclude name="**/*.java" />
+		</jar>
+		<fixcrlf srcdir="${temp.dir}/${ContextName}/bin" includes="**/*.bat" eol="crlf" />
+		<delete dir="${temp.dir}/classes" />
+		<zip destfile="${temp.dir}/${ContextName}-bin.zip">
+			<fileset dir="${temp.dir}/${ContextName}" />
+		</zip>
+		<zip destfile="${temp.dir}/${ContextName}-src.zip">
+			<fileset dir="${basedir}" />
+		</zip>
+	</target>
+</project>
+

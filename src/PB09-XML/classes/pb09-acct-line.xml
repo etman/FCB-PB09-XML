@@ -1,0 +1,23 @@
+<structure name="PB09AcctLine" structureType="char"
+	handleWildChar="true" isTrimString="true">
+	<field name="account" type="String" offset="2" length="11" />
+	<field name="trxDate" type="String" offset="15" length="7" />
+	<field name="depositType" type="String" offset="22" length="2" />
+	<field name="betweenState" type="String" offset="26" length="2" />
+	<field name="appBank" type="String" offset="30" length="4" />
+	<field name="machineCode" type="String" offset="35" length="2" />
+	<field name="transNo" type="String" offset="38" length="5" />
+	<field name="reversalMark" type="String" offset="44" length="4" />
+	<field name="accountingDateDelay" type="String" offset="49"
+		length="10" />
+	<field name="creditCash" type="String" offset="59" length="18" />
+	<field name="debitCash" type="String" offset="77" length="18" />
+	<field name="depositBalance" type="String" offset="95" length="18" />
+
+	<field name="unadjProdNumber" type="String" offset="113" length="13" />
+	<field name="adjProdNumberInLimit" type="String" offset="126"
+		length="13" />
+	<field name="adjProdNumberOutLimit" type="String" offset="139"
+		length="14" />
+	<field name="transAccntSrc" type="String" offset="153" length="20" />
+</structure>

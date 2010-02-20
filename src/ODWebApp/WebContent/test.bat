@@ -1,0 +1,1 @@
+java -cp "WEB-INF/lib/pb09-test.jar;WEB-INF/lib/ODApi.jar" internal.dummy.TestConnect

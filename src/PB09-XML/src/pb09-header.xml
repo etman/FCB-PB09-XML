@@ -1,0 +1,12 @@
+<structure name="PB09HeaderLine" structureType="char"
+	handleWildChar="true" isTrimString="true">
+  	<field name="unitName" type="String" offset="10" length="18"/>
+  	<field name="accountTypeCode" type="String" offset="47" length="4"/>
+  	<field name="reportStartYear" type="String" offset="65" length="4"/>
+  	<field name="reportStartMon" type="String" offset="73" length="2"/>
+  	<field name="reportStartDay" type="String" offset="79" length="2"/>
+  	<field name="reportEndYear" type="String" offset="89" length="4"/>
+  	<field name="reportEndMon" type="String" offset="97" length="2"/>
+  	<field name="reportEndDay" type="String" offset="103" length="2"/>
+  	<field name="pageNo" type="String" offset="143" length="5"/>
+</structure>

@@ -1,0 +1,205 @@
+<%@ page pageEncoding="UTF-8" contentType="text/html;charset=utf-8"%>
+<%@ page contentType="text/html;charset=utf-8"
+	import="java.io.*,javax.xml.transform.*,javax.xml.transform.stream.*,java.text.*,java.util.*"%>
+<%!private final static Object keeper = new Object[0];
+	private final static SimpleDateFormat sdf = new SimpleDateFormat(
+			"yyyyMMddHHmmss");
+
+	private static int retrieve(String qStr, String saveDir,
+			String fileNamePrefix, JspWriter out) throws IOException,
+			InterruptedException {
+		Runtime runtime = Runtime.getRuntime();
+		Process proc = null;
+		try {
+			String cmd = new StringBuffer(
+					"arsdoc get -h localhost -u admin -p passw0rd -f FCB-PB09-XML-3 -i \"")
+					.append(qStr).append("\" -d \"").append(saveDir).append(
+							"\" -o ").append(fileNamePrefix).append(" -n")
+					.toString();
+
+			if ("AIX".equals(System.getProperty("os.name"))) {
+				File shell = new File(saveDir, fileNamePrefix);
+				writeToShell(shell, cmd);
+				proc = runtime.exec("sh " + shell.getAbsolutePath());
+			} else {
+				proc = runtime.exec(cmd);
+			}
+
+			int rtCode = proc.waitFor();
+			if (rtCode != 0) {
+				InputStream in = proc.getErrorStream();
+				ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+				byte[] buf = new byte[1024];
+				bytesOut
+						.write(("[COMMAND ERROR] return code[" + rtCode + "]: " + cmd)
+								.getBytes());
+				bytesOut.write(System.getProperty("line.separator").getBytes());
+				for (int i = 0; (i = in.read(buf)) > 0;) {
+					bytesOut.write(buf, 0, i);
+				}
+				out.println(bytesOut.toString("ms950"));
+			}
+			return rtCode;
+		} finally {
+			if (proc != null)
+				proc.destroy();
+		}
+	}
+
+	private static void writeToShell(File shell, String cmd) throws IOException {
+		BufferedWriter out = null;
+		try {
+			out = new BufferedWriter(new FileWriter(shell));
+			out.write(cmd);
+		} finally {
+			if (out != null)
+				out.close();
+		}
+	}
+
+	private static boolean isValid(String type, String val) {
+		return (type != null && !"".equals(type.trim()) && val != null && !""
+				.equals(val.trim()));
+	}%>
+<%
+	request.setCharacterEncoding("utf-8");
+	session.removeAttribute("fileList");
+
+	String rNameOp = request.getParameter("R_NAME_AssignOP");
+	String bIdOp = request.getParameter("B_ID_AssignOP");
+	String rIdOp = request.getParameter("R_ID_AssignOP");
+	String acctOp = request.getParameter("ACCOUNT_AssignOP");
+
+	String rNameVal = request.getParameter("R_NAME_Value");
+	String bIdVal = request.getParameter("B_ID_Value");
+	String rIdVal = request.getParameter("R_ID_Value");
+	String acctVal = request.getParameter("ACCOUNT_Value");
+
+	String[] types = new String[] { "R_NAME", "B_ID", "R_ID", "ACCOUNT" };
+	String[] ops = new String[] { rNameOp, bIdOp, rIdOp, acctOp };
+	String[] values = new String[] { rNameVal, bIdVal, rIdVal, acctVal };
+	String startDate = request.getParameter("start_date");
+	String endDate = request.getParameter("end_date");
+
+	StringBuffer qStrBuf = new StringBuffer();
+	for (int i = 0; i < types.length; i++) {
+		if (isValid(ops[i], values[i])) {
+			if (qStrBuf.length() > 0) {
+				qStrBuf.append(" and ");
+			} else {
+				qStrBuf.append("where ");
+			}
+			qStrBuf.append(types[i]).append(" ").append(ops[i]).append(
+					" ");
+			if ("like".equals(ops[i])) {
+				qStrBuf.append("'%").append(values[i]).append("%'");
+			} else {
+				qStrBuf.append("'").append(values[i]).append("'");
+			}
+		}
+	}
+	if (qStrBuf.length() > 0) {
+		if (isValid(startDate, endDate)) {
+			qStrBuf.append("\" -S \"").append(startDate).append(",")
+					.append(endDate);
+		}
+		String qStr = qStrBuf.toString();
+		if (qStr != null) {
+			String rPath = session.getServletContext().getRealPath("");
+			String rndFileNamePrefix = null;
+			synchronized (keeper) {
+				rndFileNamePrefix = sdf.format(new Date());
+			}
+			int rtCode = retrieve(qStr, rPath, rndFileNamePrefix, out);
+
+			ArrayList fileList = new ArrayList();
+
+			for (int i = 1;; i++) {
+				File xmlFile = new File(rPath, rndFileNamePrefix + "."
+						+ i);
+				if (!xmlFile.exists())
+					break;
+
+				fileList.add(xmlFile);
+			}
+			session.setAttribute("fileList", fileList);
+		}
+	}
+%>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script language="javascript">
+		function createDynaField(val){
+			var rangeBlock = document.getElementById("criteriaRangeBlock");
+			var valBlock = document.getElementById("criteriaValueBlock");
+			if('S_DATE' == val || 'E_DATE' == val){
+			  rangeBlock.style.display = 'inline';
+			  valBlock.style.display = 'none';
+			} else {
+			  rangeBlock.style.display = 'none';
+			  valBlock.style.display = 'inline';
+			}
+		}
+	</script>
+</head>
+<body>
+<form method="post">查詢條件:
+<table>
+	<tr>
+		<td>帳務名稱</td>
+		<td><select name="R_NAME_AssignOP">
+			<option value="=" <%=("=".equals(rNameOp) ? " selected" : "")%>>等於</option>
+			<option value="like" <%=("like".equals(rNameOp) ? " selected" : "")%>>相似</option>
+		</select> <input type="text" name="R_NAME_Value"
+			value="<%=(rNameVal != null) ? rNameVal : ""%>"></td>
+	</tr>
+	<tr>
+		<td>單位名稱</td>
+		<td><select name="B_ID_AssignOP">
+			<option value="=" <%=("=".equals(bIdOp) ? " selected" : "")%>>等於</option>
+			<option value="like" <%=("like".equals(bIdOp) ? " selected" : "")%>>相似</option>
+		</select> <input type="text" name="B_ID_Value"
+			value="<%=(bIdVal != null) ? bIdVal : ""%>"></td>
+	</tr>
+	<tr>
+		<td>報表名稱</td>
+		<td><select name="R_ID_AssignOP">
+			<option value="=" <%=("=".equals(rIdOp) ? " selected" : "")%>>等於</option>
+			<option value="like" <%=("like".equals(rIdOp) ? " selected" : "")%>>相似</option>
+		</select> <input type="text" name="R_ID_Value"
+			value="<%=(rIdVal != null) ? rIdVal : ""%>"></td>
+	</tr>
+	<tr>
+		<td>會計科目代號</td>
+		<td><select name="ACCOUNT_AssignOP">
+			<option value="=" <%=("=".equals(acctOp) ? " selected" : "")%>>等於</option>
+			<option value="like" <%=("like".equals(acctOp) ? " selected" : "")%>>相似</option>
+		</select> <input type="text" name="ACCOUNT_Value"
+			value="<%=(acctVal != null) ? acctVal : ""%>"></td>
+	</tr>
+	<tr>
+		<td>報表起迄日</td>
+		<td><input type="text" name="start_date"
+			value="<%=(startDate != null) ? startDate : ""%>"> 介於 <input
+			type="text" name="end_date"
+			value="<%=(endDate != null) ? endDate : ""%>"></td>
+	</tr>
+</table>
+
+<input type="submit" value="搜尋" /></form>
+<hr />
+<%
+	List fileList = (List) session.getAttribute("fileList");
+	if (fileList != null) {
+		if (fileList.isEmpty()) {
+%>
+<center>找不到與搜尋條件相關的紀錄</center>
+<%
+	} else {
+			response.sendRedirect("result.jsp");
+		}
+	}
+%>
+</body>
+</html>
