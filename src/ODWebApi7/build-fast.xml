@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="." default="deploy">
+
+	<property name="TempFileDir" value="D:\Projects\github\FCB-PB09-XML\src\ODWebApp\WebContent\WEB-INF\" />
+	<property name="ContextName" value="lib" />
+	<property name="temp.dir" value="C:\temp\pb09-build" />
+	<target name="deploy">
+		<mkdir dir="${temp.dir}/classes" />
+		<javac encoding="UTF-8" srcdir="${basedir}/src" destdir="${temp.dir}/classes" classpath="${classpath}" debug="on" deprecation="off" optimize="on" target="1.4" source="1.4">
+
+			<classpath>
+				<fileset dir="${basedir}">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="C:\tomcat-inst\lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+			<include name="**/*" />
+			<exclude name="internal/**/*" />
+		</javac>
+		<jar basedir="${temp.dir}/classes" destfile="${TempFileDir}\${ContextName}\ODWebApi7.jar">
+			<exclude name="**/*.java" />
+		</jar>
+		<delete dir="${temp.dir}/classes"/>
+	</target>
+
+</project>
+
+
+
+

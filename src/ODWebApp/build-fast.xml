@@ -14,8 +14,12 @@
 			</fileset>
 		</copy>
 		<javac encoding="UTF-8" srcdir="${basedir}/src" destdir="${temp.dir}/classes" classpath="${classpath}" debug="on" deprecation="off" optimize="on" target="1.4" source="1.4">
+
 			<classpath>
 				<fileset dir="${basedir}/WebContent/WEB-INF/lib">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="D:\Projects\github\FCB-PB09-XML\src\ODWebApi7">
 					<include name="*.jar" />
 				</fileset>
 				<fileset dir="C:\tomcat-inst\lib">
@@ -23,6 +27,7 @@
 				</fileset>
 			</classpath>
 			<include name="**/*" />
+			<exclude name="internal/**/*" />
 		</javac>
 		<jar basedir="${temp.dir}/classes" destfile="${TempFileDir}\${ContextName}\WEB-INF\lib\pb09-web.jar">
 			<exclude name="**/*.java" />

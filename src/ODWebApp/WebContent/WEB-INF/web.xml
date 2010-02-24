@@ -5,8 +5,21 @@
 		<listener-class>com.steam.odwek.WebSessionListener</listener-class>
 	</listener>
 	<context-param>
+		<description>The valid value among this parameter is 7, 8 or auto. 
+		if auto were specified,	the application will check the existence 
+		of class ODConfig at runtime, since this class was only available in 
+		ODWEK version 8.</description>
+		<param-name>odwek.version</param-name>
+		<param-value>auto</param-value>
+	</context-param>
+	<context-param>
+		<description>This parameter is only valid in ODWEK version 7</description>
+		<param-name>odserver.config.dir</param-name>
+		<param-value>E:\\ars\\www</param-value>
+	</context-param>
+	<context-param>
 		<param-name>odserver.host</param-name>
-		<param-value>localhost</param-value>
+		<param-value>192.168.130.134</param-value>
 	</context-param>
 	<context-param>
 		<param-name>odserver.port</param-name>
@@ -19,10 +32,6 @@
 	<context-param>
 		<param-name>odserver.password</param-name>
 		<param-value>passw0rd</param-value>
-	</context-param>
-	<context-param>
-		<param-name>odserver.config.dir</param-name>
-		<param-value>E:\\ars\\www</param-value>
 	</context-param>
 	<context-param>
 		<param-name>working.odfolder</param-name>

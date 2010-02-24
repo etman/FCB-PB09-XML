@@ -50,9 +50,6 @@
 			}
 		}
 		
-		function openXmlViewer(docId){
-			window.open('xmlViewer.jsp?docId='+docId);
-		}
 	</script>
 </head>
 <body>
@@ -135,21 +132,19 @@
 				boolean hasValueSet = false;
 				for (int i = 0; i < types.length; i++) {
 					if (isValid(ops[i], values[i])) {
+
 						if (hasValueSet)
-							out
-									.print((folder
-											.getOrSearchCriteria() ? " 或 "
-											: " 和 "));
+							out.print((ODHelper
+									.isOrSearchCriteria(folder) ? " 或 "
+									: " 和 "));
 						hasValueSet = true;
 
 						ODCriteria c = ODHelper.addCriteria(folder,
 								types[i], Integer.parseInt(ops[i]),
 								values[i]);
-						out.println(c.getName()
-								+ " "
-								+ ODHelper
-										.convOP2Symbol(c.getOperand())
-								+ " " + c.getSearchValues()[0]);
+						out.println(c.getName() + " "
+								+ ODHelper.convOP2Symbol(c) + " "
+								+ c.getSearchValues()[0]);
 					}
 				}
 				if (startDate != null && !startDate.trim().equals("")
@@ -201,10 +196,12 @@
 	%>
 	<tr>
 		<%
-			for (int i = 0; i < displayOrder.length; i++) {
+			Enumeration e = hit.getDisplayValues();
+				while (e.hasMoreElements()) {
+					String value = (String) e.nextElement();
 		%>
-		<td><a
-			href="javascript:onclick=openXmlViewer('<%=hit.getDocId()%>')"> <%=hit.getDisplayValue(displayOrder[i])%></a></td>
+		<td><a href="xmlViewer.jsp?docId=<%=hit.getDocId()%>"
+			target="_blank"> <%=value%></a></td>
 		<%
 			}
 		%>
@@ -223,7 +220,7 @@
 		if (i > 1)
 			out.print(",");
 %>
-<a href="index2.jsp?hitsPage=<%=i%>"><%=i%></a>
+<a href="index.jsp?hitsPage=<%=i%>"><%=i%></a>
 <%
 	}
 %>

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/ODApi.jar"/>
 	<classpathentry kind="lib" path="C:/apache-tomcat-6.0.18/lib/jsp-api.jar"/>
 	<classpathentry kind="lib" path="C:/apache-tomcat-6.0.18/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/ODWebApi7.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/ODWebApi8.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/Projects/github/FCB-PB09-XML/src/ODWebApi7/ODApi7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
